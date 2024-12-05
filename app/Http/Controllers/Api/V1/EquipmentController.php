@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreEquipmentRequest;
 use App\Http\Requests\UpdateEquipmentRequest;
 use App\Http\Resources\EquipmentResource;
+use Illuminate\Support\Facades\Log;
 
 class EquipmentController extends Controller
 {
@@ -24,7 +25,26 @@ class EquipmentController extends Controller
      */
     public function store(StoreEquipmentRequest $request)
     {
-        $equipment = Equipment::create($request->validated());
+        Log::info('My request object :', $request->all());
+        if ($request->hasFile('image')) {
+            Log::info('Image upload initiated');
+            $image = $request->file('image');
+            $destinationPath = public_path('images');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+
+            $public_url = url('images/' . $imageName);
+
+            Log::info('Public url for image '.  $public_url);
+            $image->move($destinationPath, $imageName);
+
+            $request->merge(['photo_url' => $public_url]);
+        }
+
+        Log::info('request object again :',  $request->all());
+
+        $equipment = Equipment::create($request->all());
+        
+        Log::info('Equipment object :' .  $equipment);
 
         return EquipmentResource::make($equipment); 
     }

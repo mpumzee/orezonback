@@ -10,5 +10,5 @@ class Equipment extends Model
     /** @use HasFactory<\Database\Factories\EquipmentFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'brand', 'description', 'category', 'prize', 'created_by', 'photo_url',];
+    protected $fillable = ['name', 'brand', 'description', 'category', 'prize', 'created_by', 'photo_url'];
 }

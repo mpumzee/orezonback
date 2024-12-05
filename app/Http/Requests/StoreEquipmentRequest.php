@@ -28,7 +28,7 @@ class StoreEquipmentRequest extends FormRequest
             'category' => 'nullable|string|max:255',
             'prize' => 'nullable|numeric|min:0',
             'created_by' => 'nullable|string|max:255',
-            'photo_url' => 'nullable|url',
+            'photo_url' => 'nullable|string|max:255',
         ];
     }
 }
