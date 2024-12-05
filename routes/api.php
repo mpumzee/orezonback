@@ -14,3 +14,5 @@ Route::apiResource('equipment', EquipmentController::class);
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+Route::get('/search/{name}',[EquipmentController::class,'search']);

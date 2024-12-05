@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Log;
 
 class EquipmentController extends Controller
 {
+    function search($name)
+    {
+        $equipment = Equipment::where('name',$name)->get();
+        return response()->json($equipment);
+    }
+    
+    
+    
     /**
      * Display a listing of the resource.
      */
