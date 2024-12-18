@@ -13,6 +13,7 @@ class EquipmentController extends Controller
 {
     function search($name)
     {
+        Log::info('Search value '. $name);
         $equipment = Equipment::where('name',$name)->get();
         return response()->json($equipment);
     }
