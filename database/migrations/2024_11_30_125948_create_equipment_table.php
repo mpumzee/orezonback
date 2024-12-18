@@ -14,12 +14,12 @@ return new class extends Migration
     Schema::create('equipment', function (Blueprint $table) {
         $table->id();
         $table->string('name');
-        $table->string('brand')->nullable();
-        $table->string('description')->nullable();
-        $table->string('category')->nullable();
-        $table->decimal('prize', 8, 2)->nullable();
-        $table->string('created_by')->nullable();
-        $table->string('photo_url')->nullable();
+        $table->string('brand');
+        $table->string('description');
+        $table->string('category');
+        $table->decimal('prize', 8, 2);
+        $table->string('created_by');
+        $table->string('photo_url');
         $table->timestamps();
     });
 }

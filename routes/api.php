@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\EquipmentController;
+use App\Http\Controllers\Api\V1\MetalsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,8 +14,10 @@ Route::prefix('v1')->group(function() {
     // Protected routes
     Route::middleware(['auth:sanctum'])->group(function () {
         // Routes accessible to all authenticated users
-        Route::apiResource('equipment', EquipmentController::class);
+        Route::apiResource('equipment', EquipmentController::class); // Fixed issue
         Route::get('equipment/search/{name}', [EquipmentController::class, 'search']);
+        Route::apiResource('/metals', MetalsController::class);
+        Route::get('metals/search/{name}', [MetalsController::class, 'search']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [AuthController::class, 'profile']);
 
@@ -44,3 +47,4 @@ Route::prefix('v1')->group(function() {
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+ 
