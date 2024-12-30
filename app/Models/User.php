@@ -47,4 +47,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function userPackage()
+    {
+        return $this->hasOne(UserPackage::class);
+    }
+
+    public function seller()
+    {
+        return $this->hasOne(Seller::class);
+    }
+
+    public function bankDetails()
+    {
+        return $this->hasMany(BankDetail::class);
+    }
+
+    public function packages()
+    {
+        return $this->belongsToMany(Package::class, 'user_packages');
+    }
 }
