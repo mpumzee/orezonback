@@ -22,8 +22,8 @@ jobs:
 
     # Install dependencies
     - name: Install dependencies
-      run: |
-        composer install --no-dev --no-progress --prefer-dist --optimize-autoloader
+      # run: |
+      #   composer install --no-dev --no-progress --prefer-dist --optimize-autoloader
 
     # Run tests (optional)
     # - name: Run tests
