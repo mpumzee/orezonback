@@ -12,7 +12,7 @@ Route::prefix('v1')->group(function() {
     Route::post('/register', [AuthController::class, 'register']);
 
     // Protected routes
-    Route::middleware(['auth:sanctum'])->group(function () {
+    // Route::middleware(['auth:sanctum'])->group(function () {
         // Routes accessible to all authenticated users
         Route::apiResource('equipment', EquipmentController::class); // Fixed issue
         Route::get('equipment/search/{name}', [EquipmentController::class, 'search']);
@@ -41,7 +41,7 @@ Route::prefix('v1')->group(function() {
                 return response()->json(['message' => 'Welcome Buyer']);
             });
         });
-    });
+ 
 });
 
 Route::get('/user', function (Request $request) {
