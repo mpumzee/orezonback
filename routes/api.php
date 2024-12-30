@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
+use App\Http\Controllers\Api\V1\PackageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +11,13 @@ Route::prefix('v1')->group(function() {
     // Public routes
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
+
+    Route::prefix('packages')->group(function () {
+        Route::post('/register', [PackageController::class, 'createPackage']);
+        Route::put('/update/{id}', [PackageController::class, 'updatePackage']);
+        Route::get('/', [PackageController::class, 'getPackages']);
+        Route::get('/{id}', [PackageController::class, 'find']);
+    });
 
     // Protected routes
     Route::middleware(['auth:sanctum'])->group(function () {
