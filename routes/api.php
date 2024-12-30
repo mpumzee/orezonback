@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\PackageController;
+use App\Http\Controllers\Api\V1\SellerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,13 @@ Route::prefix('v1')->group(function() {
         Route::put('/update/{id}', [PackageController::class, 'updatePackage']);
         Route::get('/', [PackageController::class, 'getPackages']);
         Route::get('/{id}', [PackageController::class, 'find']);
+    });
+
+    Route::prefix('sellers')->group(function () {
+        Route::post('/register', [SellerController::class, 'registerSeller']);
+        Route::put('/update/{id}', [SellerController::class, 'update']);
+        Route::get('/', [SellerController::class, 'getSellers']);
+        Route::get('/{id}', [SellerController::class, 'find']);
     });
 
     // Protected routes
