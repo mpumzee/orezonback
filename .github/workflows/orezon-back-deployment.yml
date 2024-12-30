@@ -39,3 +39,6 @@ jobs:
         protocol: ftp
         local-dir: ./ # Path to the built Angular app
         server-dir: /domains/orezon.co.zw/public_html/ # Path on tReplace with the target remote directory on the FTP server.
+        exclude: |
+                  .env
+                  vendor/*
