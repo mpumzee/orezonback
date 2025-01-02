@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('bank_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('bank_id');
+            $table->string('bank');
             $table->string('account_number');
+            $table->string('branch');
+            $table->string('branch_code');
             $table->timestamps();
         });
     }
