@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\PackageController;
 use App\Http\Controllers\Api\V1\SellerController;
+use App\Http\Controllers\Api\V1\SellerPackageController;
 use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ Route::prefix('v1')->group(function() {
     Route::prefix('packages')->group(function () {
         Route::post('/register', [PackageController::class, 'createPackage']);
         Route::put('/update/{id}', [PackageController::class, 'updatePackage']);
+        Route::put('/update-status/{id}', [PackageController::class, 'updateStatus']);
         Route::get('/', [PackageController::class, 'getPackages']);
         Route::get('/{id}', [PackageController::class, 'find']);
     });
@@ -52,6 +54,8 @@ Route::prefix('v1')->group(function() {
             Route::get('/seller/dashboard', function () {
                 return response()->json(['message' => 'Welcome Seller']);
             });
+
+            Route::post('/seller/select-package', [SellerPackageController::class, 'selectPackage']);
         });
 
         // Buyer-only routes

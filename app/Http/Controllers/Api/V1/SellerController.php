@@ -50,7 +50,7 @@ class SellerController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:8|max:255|confirmed',
-                'role' => 'required|string|in:admin,buyer,seller',
+                // 'role' => 'required|string|in:admin,buyer,seller',
                 'id_number' => ['required', 'min:6', 'max:12', 'unique:sellers,id_number'],
                 'country' => ['required'],
                 'business_name' => ['required'],
@@ -71,7 +71,7 @@ class SellerController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role' => $request->role
+                'role' => "seller"
             ]);
 
             $seller = Seller::create([

@@ -85,4 +85,23 @@ class PackageController extends Controller
         }
 
     }
+
+    public function updateStatus($id)
+    {
+        try {
+            $package = Package::find($id);
+
+            if (!$package) {
+                return notFoundResponseHandler("Package not found");
+            }
+
+            $package->status = $package->status === "active" ? "inactive" : "active";
+            $package->save();
+
+            return successResponseHandler("updated status successfully", $package);
+
+        } catch (\Exception $e) {
+            return errorResponseHandler($e->getMessage());
+        }
+    }
 }
