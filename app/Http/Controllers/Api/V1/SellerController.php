@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\BankDetail;
 use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -48,10 +49,14 @@ class SellerController extends Controller
                 'email' => 'required|string|email|max:255|unique:users,email',
                 'password' => 'required|string|min:8|max:255|confirmed',
                 'role' => 'required|string|in:admin,buyer,seller',
-                'id_number' => ['required', 'min:11', 'max:12', 'unique:sellers,id_number'],
+                'id_number' => ['required', 'min:6', 'max:12', 'unique:sellers,id_number'],
                 'country' => ['required'],
                 'business_name' => ['required'],
-                'phone' => ['required', 'min:9', 'max:14']
+                'phone' => ['required', 'min:9', 'max:14'],
+                'bank' => ['required'], 
+                'account_number' => ['required'],
+                'branch' => ['required'],
+                'branch_code' => ['required']
             ]);
 
             if ($validator->fails()) {
@@ -73,6 +78,14 @@ class SellerController extends Controller
                 'country' => $request->country,
                 'business_name' => $request->business_name,
                 'phone' => $request->phone
+            ]);
+
+            $bank = BankDetail::create([
+                'user_id' => $user->id,
+                'bank' => $request->bank,
+                'account_number' => $request->account_number,
+                'branch' => $request->branch,
+                'branch_code' => $request->branch_code 
             ]);
 
             DB::commit();
