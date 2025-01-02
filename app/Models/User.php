@@ -59,6 +59,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Seller::class);
     }
 
+    public function buyer()
+    {
+        return $this->hasOne(Buyer::class);
+    }
+
     public function bankDetails()
     {
         return $this->hasMany(BankDetail::class);

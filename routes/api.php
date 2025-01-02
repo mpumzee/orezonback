@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\BuyerController;
 use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\PackageController;
@@ -16,6 +17,12 @@ Route::prefix('v1')->group(function() {
     // Public routes
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
+
+    Route::post('buyer', [BuyerController::class, 'store']);
+    Route::get('buyer', [BuyerController::class, 'index']);
+    Route::get('buyer/{id}', [BuyerController::class, 'show']);
+    Route::put('buyer/{id}', [BuyerController::class, 'update']);
+    Route::delete('buyer/{id}', [BuyerController::class, 'destroy']);
 
     Route::prefix('packages')->group(function () {
         Route::post('/register', [PackageController::class, 'createPackage']);
