@@ -5,8 +5,11 @@ use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\PackageController;
 use App\Http\Controllers\Api\V1\SellerController;
+use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::get('verify-email/{id}', [UserEmailVerificationController::class, 'verify'])->name('verification.verify');
 
 Route::prefix('v1')->group(function() {
     // Public routes

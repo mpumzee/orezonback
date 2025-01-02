@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Mail\VerificationMail;
 use App\Models\BankDetail;
 use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class SellerController extends Controller
@@ -89,6 +91,8 @@ class SellerController extends Controller
             ]);
 
             DB::commit();
+
+            Mail::to($user->email)->send(new VerificationMail($user));
 
             // Load the associated user for the seller
             $seller->load('user');
