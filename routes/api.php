@@ -4,8 +4,13 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\PackageController;
+use App\Http\Controllers\Api\V1\SellerController;
+use App\Http\Controllers\Api\V1\SellerPackageController;
+use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::get('verify-email/{id}', [UserEmailVerificationController::class, 'verify'])->name('verification.verify');
 
 Route::prefix('v1')->group(function() {
     // Public routes
@@ -15,8 +20,16 @@ Route::prefix('v1')->group(function() {
     Route::prefix('packages')->group(function () {
         Route::post('/register', [PackageController::class, 'createPackage']);
         Route::put('/update/{id}', [PackageController::class, 'updatePackage']);
+        Route::put('/update-status/{id}', [PackageController::class, 'updateStatus']);
         Route::get('/', [PackageController::class, 'getPackages']);
         Route::get('/{id}', [PackageController::class, 'find']);
+    });
+
+    Route::prefix('sellers')->group(function () {
+        Route::post('/register', [SellerController::class, 'registerSeller']);
+        Route::put('/update/{id}', [SellerController::class, 'update']);
+        Route::get('/', [SellerController::class, 'getSellers']);
+        Route::get('/{id}', [SellerController::class, 'find']);
     });
 
     // Protected routes
@@ -41,6 +54,8 @@ Route::prefix('v1')->group(function() {
             Route::get('/seller/dashboard', function () {
                 return response()->json(['message' => 'Welcome Seller']);
             });
+
+            Route::post('/seller/select-package', [SellerPackageController::class, 'selectPackage']);
         });
 
         // Buyer-only routes
