@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\PackageController;
 use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
@@ -40,9 +41,15 @@ Route::prefix('v1')->group(function() {
         Route::get('/{id}', [SellerController::class, 'find']);
     });
 
+    Route::prefix('categories')->group(function () { 
+        Route::get('/', [CategoriesController::class, 'index']); 
+        Route::get('/{id}', [CategoriesController::class, 'show']);
+    });
+
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductsController::class, 'index']);
         Route::get('/{id}', [ProductsController::class, 'find']);
+        Route::get('/category/{id}', [ProductsController::class, 'findByCategory']);
     });
 
     // Protected routes
@@ -59,6 +66,12 @@ Route::prefix('v1')->group(function() {
         Route::middleware('role:admin')->group(function () {
             Route::get('/admin/dashboard', function () {
                 return response()->json(['message' => 'Welcome Admin']);
+            });
+
+            Route::prefix('categories')->group(function () {
+                Route::post('/', [CategoriesController::class, 'store']); 
+                Route::put('/{id}', [CategoriesController::class, 'update']);
+                Route::delete('/{id}', [CategoriesController::class, 'destroy']);
             });
         });
 

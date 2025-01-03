@@ -26,7 +26,19 @@ class ProductsController extends Controller
             $product = Product::find($id);
 
             return successResponseHandler('fetched product', $product);
-            
+
+        } catch (\Exception $e) {
+            return errorResponseHandler($e->getMessage());
+        }
+    }
+
+    public function findByCategory($category_id)
+    {
+        try {
+            $products = Product::where('category_id', $category_id)->first();
+
+            return successResponseHandler('fetched product', $products);
+
         } catch (\Exception $e) {
             return errorResponseHandler($e->getMessage());
         }
@@ -71,6 +83,7 @@ class ProductsController extends Controller
 
             // Create the product
             $validatedData = $request->validate([
+                'category_id' => 'required|exists:categorie,id',
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'required|numeric|min:0',
@@ -112,6 +125,7 @@ class ProductsController extends Controller
 
             // Validate request data
             $validatedData = $request->validate([
+                'category_id' => 'required|exists:categorie,id',
                 'name' => 'nullable|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'nullable|numeric|min:0',
