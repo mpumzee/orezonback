@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\PackageController;
 use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,11 @@ Route::prefix('v1')->group(function() {
         Route::get('/{id}', [SellerController::class, 'find']);
     });
 
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductsController::class, 'index']);
+        Route::get('/{id}', [ProductsController::class, 'find']);
+    });
+
     // Protected routes
     Route::middleware(['auth:sanctum'])->group(function () {
         // Routes accessible to all authenticated users
@@ -63,6 +69,15 @@ Route::prefix('v1')->group(function() {
             });
 
             Route::post('/seller/select-package', [SellerPackageController::class, 'selectPackage']);
+
+            Route::prefix('products')->group(function () {
+                Route::post('/create', [ProductsController::class, 'store']);
+                Route::put('/update/{id}', [ProductsController::class, 'update']);
+                Route::get('/', [ProductsController::class, 'index']);
+                Route::get('/seller/{id}', [ProductsController::class, 'sellerProducts']);
+                Route::get('/{id}', [ProductsController::class, 'find']);
+                Route::delete('/{id}', [ProductsController::class, 'destroy']);
+            });
         });
 
         // Buyer-only routes
