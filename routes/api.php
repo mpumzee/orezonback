@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BuyerController;
 use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
+use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PackageController;
 use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
@@ -62,6 +63,12 @@ Route::prefix('v1')->group(function() {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [AuthController::class, 'profile']);
 
+        Route::prefix('orders')->middleware('auth')->group(function () {
+            Route::post('/', [OrderController::class, 'store']);
+            Route::get('/', [OrderController::class, 'index']);
+            Route::get('/{id}', [OrderController::class, 'show']);
+        });
+
         // Admin-only routes
         Route::middleware('role:admin')->group(function () {
             Route::get('/admin/dashboard', function () {
@@ -90,6 +97,15 @@ Route::prefix('v1')->group(function() {
                 Route::get('/seller/{id}', [ProductsController::class, 'sellerProducts']);
                 Route::get('/{id}', [ProductsController::class, 'find']);
                 Route::delete('/{id}', [ProductsController::class, 'destroy']);
+            });
+
+            Route::prefix('orders')->middleware('auth')->group(function () {
+                Route::get('/seller/{sellerId}', [OrderController::class, 'getOrdersForSeller']);
+                Route::get('/seller/{sellerId}/pending', [OrderController::class, 'getPendingOrdersForSeller']);
+                Route::get('/seller/{sellerId}/completed', [OrderController::class, 'getCompletedOrdersForSeller']);
+                Route::get('/seller/{sellerId}/canceled', [OrderController::class, 'getCanceledOrdersForSeller']);
+                Route::put('/{id}', [OrderController::class, 'update']);
+                Route::delete('/{id}', [OrderController::class, 'destroy']);
             });
         });
 
