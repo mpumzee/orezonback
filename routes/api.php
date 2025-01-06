@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\BuyerController;
 use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
+use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PackageController;
 use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
+use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -17,10 +21,13 @@ Route::prefix('v1')->group(function() {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
 
+    Route::post('buyer', [BuyerController::class, 'store']);
+    Route::get('buyer', [BuyerController::class, 'index']);
+    Route::get('buyer/{id}', [BuyerController::class, 'show']);
+    Route::put('buyer/{id}', [BuyerController::class, 'update']);
+    Route::delete('buyer/{id}', [BuyerController::class, 'destroy']);
+
     Route::prefix('packages')->group(function () {
-        Route::post('/register', [PackageController::class, 'createPackage']);
-        Route::put('/update/{id}', [PackageController::class, 'updatePackage']);
-        Route::put('/update-status/{id}', [PackageController::class, 'updateStatus']);
         Route::get('/', [PackageController::class, 'getPackages']);
         Route::get('/{id}', [PackageController::class, 'find']);
     });
@@ -30,6 +37,17 @@ Route::prefix('v1')->group(function() {
         Route::put('/update/{id}', [SellerController::class, 'update']);
         Route::get('/', [SellerController::class, 'getSellers']);
         Route::get('/{id}', [SellerController::class, 'find']);
+    });
+
+    Route::prefix('categories')->group(function () { 
+        Route::get('/', [CategoriesController::class, 'index']); 
+        Route::get('/{id}', [CategoriesController::class, 'show']);
+    });
+
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductsController::class, 'index']);
+        Route::get('/{id}', [ProductsController::class, 'find']);
+        Route::get('/category/{id}', [ProductsController::class, 'findByCategory']);
     });
 
     // Protected routes
@@ -42,11 +60,30 @@ Route::prefix('v1')->group(function() {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [AuthController::class, 'profile']);
 
+        Route::prefix('packages')->group(function () {
+            Route::post('/register', [PackageController::class, 'createPackage']);
+            Route::put('/update/{id}', [PackageController::class, 'updatePackage']);
+            Route::put('/update-status/{id}', [PackageController::class, 'updateStatus']);
+        });
+
+        Route::prefix('orders')->middleware('auth')->group(function () {
+            Route::post('/', [OrderController::class, 'store']);
+            Route::get('/', [OrderController::class, 'index']);
+            Route::get('/{id}', [OrderController::class, 'show']);
+        });
+
+        Route::prefix('categories')->group(function () {
+            Route::post('/', [CategoriesController::class, 'store']); 
+            Route::put('/{id}', [CategoriesController::class, 'update']);
+            Route::delete('/{id}', [CategoriesController::class, 'destroy']);
+        });
+
         // Admin-only routes
         Route::middleware('role:admin')->group(function () {
             Route::get('/admin/dashboard', function () {
                 return response()->json(['message' => 'Welcome Admin']);
             });
+
         });
 
         // Seller-only routes
@@ -56,6 +93,24 @@ Route::prefix('v1')->group(function() {
             });
 
             Route::post('/seller/select-package', [SellerPackageController::class, 'selectPackage']);
+
+            Route::prefix('products')->group(function () {
+                Route::post('/create', [ProductsController::class, 'store']);
+                Route::put('/update/{id}', [ProductsController::class, 'update']);
+                // Route::get('/', [ProductsController::class, 'index']);
+                Route::get('/seller/{id}', [ProductsController::class, 'sellerProducts']);
+                // Route::get('/{id}', [ProductsController::class, 'find']);
+                Route::delete('/{id}', [ProductsController::class, 'destroy']);
+            });
+
+            Route::prefix('orders')->middleware('auth')->group(function () {
+                Route::get('/seller/{sellerId}', [OrderController::class, 'getOrdersForSeller']);
+                Route::get('/seller/{sellerId}/pending', [OrderController::class, 'getPendingOrdersForSeller']);
+                Route::get('/seller/{sellerId}/completed', [OrderController::class, 'getCompletedOrdersForSeller']);
+                Route::get('/seller/{sellerId}/canceled', [OrderController::class, 'getCanceledOrdersForSeller']);
+                Route::put('/{id}', [OrderController::class, 'update']);
+                Route::delete('/{id}', [OrderController::class, 'destroy']);
+            });
         });
 
         // Buyer-only routes
@@ -65,6 +120,10 @@ Route::prefix('v1')->group(function() {
             });
         });
  
+});
+
+Route::get('/login', function () {
+    return response()->json(['message' => 'Unauthenticated'], 401);
 });
 
 Route::get('/user', function (Request $request) {

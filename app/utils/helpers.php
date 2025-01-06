@@ -34,6 +34,15 @@ function errorValidationResponseHandler($msg, $data=[])
     ], 400);
 }
 
+function deletedResponseHandler($msg, $data=[])
+{
+    return response()->json([
+        'status' => 'error',
+        'message' => $msg,
+        'data' => $data
+    ], 204);
+}
+
 function deleteSuccessHandler($msg, $data=[])
 {
     return response()->json([
@@ -41,6 +50,15 @@ function deleteSuccessHandler($msg, $data=[])
         'message' => $msg,
         'data' => $data
     ], 200);
+}
+
+function forbiddenResponseHandler($msg, $data=[])
+{
+    return response()->json([
+        'status' => 'error',
+        'message' => $msg,
+        'data' => $data
+    ], 403);
 }
 
 function notFoundResponseHandler($msg, $data=[])
