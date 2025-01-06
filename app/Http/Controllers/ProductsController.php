@@ -52,7 +52,7 @@ class ProductsController extends Controller
 
             $products = Product::where('user_id', $user->id)->get();
 
-            return successResponseHandler('fetched sellere products successfully',$products);
+            return successResponseHandler('fetched seller products successfully',$products);
 
         } catch (\Exception $e) {
             return errorResponseHandler($e->getMessage());
@@ -128,7 +128,7 @@ class ProductsController extends Controller
 
             // Validate request data
             $validatedData = $request->validate([
-                'category_id' => 'required|exists:categorie,id',
+                'category_id' => 'required|exists:categories,id',
                 'name' => 'nullable|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'nullable|numeric|min:0',
@@ -155,7 +155,7 @@ class ProductsController extends Controller
             // Add image URL to the response
             $product->image_url = $product->image_url ? asset('storage/' . $product->image_path) : null;
 
-            return successResponseHandler('updated prduct successfully',$product);
+            return successResponseHandler('updated product successfully',$product);
         } catch (\Exception $e) {
             return errorResponseHandler($e->getMessage());
         }
