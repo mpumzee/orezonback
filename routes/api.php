@@ -21,7 +21,7 @@ Route::prefix('v1')->group(function() {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
 
-    Route::post('buyer', [BuyerController::class, 'store']);
+    Route::post('/buyer', [BuyerController::class, 'store']);
     Route::get('buyer', [BuyerController::class, 'index']);
     Route::get('buyer/{id}', [BuyerController::class, 'show']);
     Route::put('buyer/{id}', [BuyerController::class, 'update']);
