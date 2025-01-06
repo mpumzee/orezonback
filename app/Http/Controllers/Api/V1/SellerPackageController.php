@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Package;
 use App\Models\Seller;
 use App\Models\UserPackage;
 use Illuminate\Http\Request;
@@ -29,6 +30,12 @@ class SellerPackageController extends Controller
                     'message' => 'Seller already has a selected package. Update instead.',
                     'data' => $seller
                 ], 409);
+            }
+
+            $package = Package::where('id', $request->package_id)->where('status', 'inactive')->exists();
+
+            if ($package) {
+                return successResponseHandler("the seclected package is inactive", $package);
             }
 
             // Link the seller to the package

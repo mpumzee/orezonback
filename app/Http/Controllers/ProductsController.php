@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Package;
 use App\Models\Product;
 use App\Models\UserPackage;
 use Illuminate\Http\Request;
@@ -66,9 +67,11 @@ class ProductsController extends Controller
             
             // Get the current user's package and the product limit
             $userPackage = UserPackage::where('user_id', $user->id)
+                ->first();
+
+            $package = Package::where('id', $userPackage->package_id)
                 ->where('status', 'active')
                 ->first();
-            $package = $userPackage->package;
 
             if (!$package || $package->number_of_products <= 0) {
                 return forbiddenResponseHandler('No package assigned or package does not allow any products');
@@ -83,26 +86,26 @@ class ProductsController extends Controller
 
             // Create the product
             $validatedData = $request->validate([
-                'category_id' => 'required|exists:categorie,id',
+                'category_id' => 'required|exists:categories,id',
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'required|numeric|min:0',
-                'stock' => 'required|integer|min:0',
+                'quantity' => 'required|integer|min:0',
                 'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
             $validatedData['user_id'] = $user->id;
 
             // Handle image upload
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
+            if ($request->hasFile('image_url')) {
+                $image = $request->file('image_url');
                 $imagePath = $image->store('products', 'public'); // Save in the "public/products" directory
                 $validatedData['image_url'] = $imagePath;
             }
 
             $product = Product::create($validatedData);
 
-            return createdResponseHandler('Product uplade successfully', $product);
+            return createdResponseHandler('Product uploaded successfully', $product);
 
         } catch (\Exception $e) {
             return errorResponseHandler($e->getMessage());
@@ -129,8 +132,8 @@ class ProductsController extends Controller
                 'name' => 'nullable|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'nullable|numeric|min:0',
-                'stock' => 'nullable|integer|min:0',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate new image
+                'quantity' => 'nullable|integer|min:0',
+                'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate new image
             ]);
 
             // Handle image upload
