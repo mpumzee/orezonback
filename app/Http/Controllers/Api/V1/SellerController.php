@@ -18,7 +18,11 @@ class SellerController extends Controller
     public function getSellers()
     {
         try {
-            $sellers = Seller::with(['user'])->latest()->get();
+            $sellers = Seller::with([
+                'user', 
+                'user.bankDetails', 
+                'packages'
+            ])->latest()->get();
 
             return successResponseHandler('Sellers fetched successfully', $sellers);
 
