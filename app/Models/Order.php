@@ -23,4 +23,9 @@ class Order extends Model
         return $this->belongsTo(User::class, 'seller_id');
     }
 
+    public function subOrders()
+    {
+        return $this->hasMany(SubOrder::class);
+    }
+
 }
