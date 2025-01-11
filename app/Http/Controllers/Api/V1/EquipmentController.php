@@ -25,7 +25,7 @@ class EquipmentController extends Controller
      */
     public function index()
     {
-        return EquipmentResource::collection(Equipment->all());
+        return EquipmentResource::collection(Equipment::all());
     }
 
 

@@ -52,7 +52,7 @@ class ProductsController extends Controller
 
             $products = Product::with(['subcategory.category'])->where('user_id', $user->id)->get();
 
-            return successResponseHandler('fetched sellere products successfully',$products);
+            return successResponseHandler('fetched seller products successfully',$products);
 
         } catch (\Exception $e) {
             return errorResponseHandler($e->getMessage());
@@ -155,7 +155,7 @@ class ProductsController extends Controller
             // Add image URL to the response
             $product->image_url = $product->image_url ? asset('storage/' . $product->image_path) : null;
 
-            return successResponseHandler('updated prduct successfully',$product);
+            return successResponseHandler('updated product successfully',$product);
         } catch (\Exception $e) {
             return errorResponseHandler($e->getMessage());
         }

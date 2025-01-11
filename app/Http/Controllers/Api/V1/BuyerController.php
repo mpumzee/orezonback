@@ -11,12 +11,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class BuyerController extends Controller
 {
      // Create Buyer
      public function store(Request $request)
      {
+        Log::info('request :', $request->all());
         try {
             $request->validate([
                 'name' => 'required|string',
@@ -41,10 +43,10 @@ class BuyerController extends Controller
             ]);
     
             // Handle Profile Picture Upload
-            $profilePicPath = $request->file('profile_pic') 
-                ? $request->file('profile_pic')->store('profile_pics') 
+           $profilePicPath = $request->file('profile_pic') 
+                ? url($request->file('profile_pic')->store('profile_pics')) 
                 : null;
-    
+            $profilePicUrl = $profilePicPath ? Storage::url('profile_pics/' . $profilePicPath) : null;
             // Create Buyer
             $buyer = Buyer::create([
                 'user_id' => $user->id,
