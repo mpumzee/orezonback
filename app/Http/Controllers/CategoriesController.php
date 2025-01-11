@@ -30,7 +30,7 @@ class CategoriesController extends Controller
     public function index()
     {
         try {
-            $categories = Category::all();
+            $categories = Category::with(['subcategories'])->get();
 
             return successResponseHandler('fetched categories successfully',$categories);
 
@@ -45,7 +45,7 @@ class CategoriesController extends Controller
     public function show($id)
     {
         try {
-            $category = Category::with('products')->find($id);
+            $category = Category::with(['subcategories'])->find($id);
 
             if (!$category) {
                 return notFoundResponseHandler('Category not found');

@@ -27,4 +27,9 @@ class Product extends Model
     {
         return $this->belongsTo(User::class, 'user_id'); // The product owner
     }
+
+    public function subcategory()
+    {
+        return $this->belongsTo(SubCategory::class, 'sub_category_id');
+    }
 }
