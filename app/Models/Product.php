@@ -32,4 +32,11 @@ class Product extends Model
     {
         return $this->belongsTo(SubCategory::class, 'sub_category_id');
     }
+
+    public function subOrders()
+    {
+        return $this->belongsToMany(SubOrder::class, 'order_products')
+                    ->withPivot('quantity', 'price');
+    }
+
 }
