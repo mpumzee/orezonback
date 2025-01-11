@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('sub_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('sub_category_id')->constrained('sub_categories');
+            $table->foreignId('category_id')
+                  ->constrained('categories')
+                  ->cascadeOnDelete(); // Ensures subcategories are deleted if the parent category is deleted
             $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('price', 15, 2);
-            $table->integer('quantity')->default(0);
-            $table->string('image_url')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('sub_categories');
     }
 };

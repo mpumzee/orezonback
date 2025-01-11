@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SubCategoriesController;
 use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,11 @@ Route::prefix('v1')->group(function() {
         Route::get('/{id}', [CategoriesController::class, 'show']);
     });
 
+    Route::prefix('sub-categories')->group(function () { 
+        Route::get('/', [SubCategoriesController::class, 'index']); 
+        Route::get('/{id}', [SubCategoriesController::class, 'show']);
+    });
+
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductsController::class, 'index']);
         Route::get('/{id}', [ProductsController::class, 'find']);
@@ -76,6 +82,12 @@ Route::prefix('v1')->group(function() {
             Route::post('/', [CategoriesController::class, 'store']); 
             Route::put('/{id}', [CategoriesController::class, 'update']);
             Route::delete('/{id}', [CategoriesController::class, 'destroy']);
+        });
+
+        Route::prefix('sub-categories')->group(function () {
+            Route::post('/', [SubCategoriesController::class, 'store']); 
+            Route::put('/{id}', [SubCategoriesController::class, 'update']);
+            Route::delete('/{id}', [SubCategoriesController::class, 'destroy']);
         });
 
         // Admin-only routes

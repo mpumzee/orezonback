@@ -13,7 +13,7 @@ class ProductsController extends Controller
     public function index()
     {
         try {
-            $products = Product::get();
+            $products = Product::with(['subcategory'])->get();
 
             return successResponseHandler('fetched products successfully',$products);
         } catch (\Exception $e) {
@@ -24,7 +24,7 @@ class ProductsController extends Controller
     public function find($id)
     {
         try {
-            $product = Product::find($id);
+            $product = Product::with(['subcategory.category'])->find($id);
 
             return successResponseHandler('fetched product', $product);
 
@@ -33,10 +33,10 @@ class ProductsController extends Controller
         }
     }
 
-    public function findByCategory($category_id)
+    public function findByCategory($sub_category_id)
     {
         try {
-            $products = Product::where('category_id', $category_id)->first();
+            $products = Product::with(['subcategory.category'])->where('sub_category_id', $sub_category_id)->first();
 
             return successResponseHandler('fetched product', $products);
 
@@ -50,7 +50,7 @@ class ProductsController extends Controller
         try {
             $user = auth()->user();
 
-            $products = Product::where('user_id', $user->id)->get();
+            $products = Product::with(['subcategory.category'])->where('user_id', $user->id)->get();
 
             return successResponseHandler('fetched seller products successfully',$products);
 
@@ -86,7 +86,7 @@ class ProductsController extends Controller
 
             // Create the product
             $validatedData = $request->validate([
-                'category_id' => 'required|exists:categories,id',
+                'sub_category_id' => 'required|exists:sub_categories,id',
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'required|numeric|min:0',
@@ -128,7 +128,7 @@ class ProductsController extends Controller
 
             // Validate request data
             $validatedData = $request->validate([
-                'category_id' => 'required|exists:categories,id',
+                'sub_category_id' => 'required|exists:sub_categories,id',
                 'name' => 'nullable|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'nullable|numeric|min:0',
