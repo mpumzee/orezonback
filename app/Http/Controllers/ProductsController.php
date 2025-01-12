@@ -137,14 +137,14 @@ class ProductsController extends Controller
             ]);
 
             // Handle image upload
-            if ($request->hasFile('image')) {
+            if ($request->hasFile('image_url')) {
                 // Delete the old image if it exists
-                if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
-                    Storage::disk('public')->delete($product->image_path);
+                if ($product->image_url && Storage::disk('public')->exists($product->image_url)) {
+                    Storage::disk('public')->delete($product->image_url);
                 }
 
                 // Save the new image
-                $image = $request->file('image');
+                $image = $request->file('image_url');
                 $imagePath = $image->store('products', 'public');
                 $validatedData['image_url'] = $imagePath;
             }
