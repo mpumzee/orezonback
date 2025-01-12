@@ -41,12 +41,20 @@ class BuyerController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => "buyer",
             ]);
+
+            // Handle image upload
+            if ($request->hasFile('profile_pic')) {
+                $image = $request->file('profile_pic');
+                $imagePath = $image->store('profile_pics', 'public'); // Save in the "public/products" directory
+                // $validatedData['image_url'] = $imagePath;
+            }
     
             // Handle Profile Picture Upload
-           $profilePicPath = $request->file('profile_pic') 
-                ? url($request->file('profile_pic')->store('profile_pics')) 
-                : null;
-            $profilePicUrl = $profilePicPath ? Storage::url('profile_pics/' . $profilePicPath) : null;
+        //    $profilePicPath = $request->file('profile_pic') 
+        //         ? url($request->file('profile_pic')->store('profile_pics')) 
+        //         : null;
+        //     $profilePicUrl = $profilePicPath ? Storage::url('profile_pics/' . $profilePicPath) : null;
+
             // Create Buyer
             $buyer = Buyer::create([
                 'user_id' => $user->id,
@@ -54,7 +62,7 @@ class BuyerController extends Controller
                 'country' => $request->country,
                 'phone' => $request->phone,
                 'address' => $request->address,
-                'profile_pic' => $profilePicPath,
+                'profile_pic' => $imagePath,
             ]);
 
             DB::commit();
@@ -133,12 +141,25 @@ class BuyerController extends Controller
             ]);
     
             // Handle Profile Picture Update
-            if ($request->file('profile_pic')) {
-                if ($buyer->profile_pic) {
-                    Storage::delete($buyer->profile_pic);
+            // if ($request->file('profile_pic')) {
+            //     if ($buyer->profile_pic) {
+            //         Storage::delete($buyer->profile_pic);
+            //     }
+            //     $profilePicPath = $request->file('profile_pic')->store('profile_pics');
+            //     $buyer->profile_pic = $profilePicPath;
+            // }
+
+            // Handle image upload
+            if ($request->hasFile('profile_pic')) {
+                // Delete the old image if it exists
+                if ($buyer->image_path && Storage::disk('public')->exists($buyer->profile_pic)) {
+                    Storage::disk('public')->delete($buyer->profile_pic);
                 }
-                $profilePicPath = $request->file('profile_pic')->store('profile_pics');
-                $buyer->profile_pic = $profilePicPath;
+
+                // Save the new image
+                $image = $request->file('profile_pic');
+                $imagePath = $image->store('profile_pics', 'public');
+                $buyer->profile_pic = $imagePath;
             }
     
             // Update Buyer
