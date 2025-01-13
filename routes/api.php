@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PackageController;
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
 use App\Http\Controllers\CategoriesController;
@@ -16,6 +17,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('verify-email/{id}', [UserEmailVerificationController::class, 'verify'])->name('verification.verify');
+
+Route::get('/paypal/success', [PaymentController::class, 'success'])->name('paypal.success');
+Route::get('/paypal/cancel', [PaymentController::class, 'cancel'])->name('paypal.cancel');
 
 Route::prefix('v1')->group(function() {
     // Public routes
