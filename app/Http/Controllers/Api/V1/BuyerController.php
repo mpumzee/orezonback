@@ -42,6 +42,8 @@ class BuyerController extends Controller
                 'role' => "buyer",
             ]);
 
+            $imagePath = null;
+            
             // Handle image upload
             if ($request->hasFile('profile_pic')) {
                 $image = $request->file('profile_pic');
