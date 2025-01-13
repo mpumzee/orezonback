@@ -72,14 +72,6 @@ Route::prefix('v1')->group(function() {
             Route::put('/update-status/{id}', [PackageController::class, 'updateStatus']);
         });
 
-        Route::prefix('orders')->middleware('auth')->group(function () {
-            Route::post('/', [OrderController::class, 'store']);
-            Route::get('/', [OrderController::class, 'index']);
-            Route::get('/{id}', [OrderController::class, 'show']);
-            Route::get('/buyer-order/{id}', [OrderController::class, 'showBuyerOrder']);
-            Route::get('/seller-order/{id}', [OrderController::class, 'showSellerOrder']);
-        });
-
         Route::prefix('categories')->group(function () {
             Route::post('/', [CategoriesController::class, 'store']); 
             Route::put('/{id}', [CategoriesController::class, 'update']);
@@ -134,11 +126,19 @@ Route::prefix('v1')->group(function() {
                 return response()->json(['message' => 'Welcome Buyer']);
             });
         });
- 
-});
 
-Route::get('/login', function () {
-    return response()->json(['message' => 'Unauthenticated'], 401);
+        Route::prefix('orders')->middleware('auth')->group(function () {
+            Route::post('/', [OrderController::class, 'store']);
+            Route::get('/', [OrderController::class, 'index']);
+            Route::get('/{id}', [OrderController::class, 'show']);
+            Route::get('/buyer-order/{id}', [OrderController::class, 'showBuyerOrder']);
+            Route::get('/seller-order/{id}', [OrderController::class, 'showSellerOrder']);
+        });
+        
+        Route::get('/login', function () {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        });
+    });
 });
 
 Route::get('/user', function (Request $request) {
