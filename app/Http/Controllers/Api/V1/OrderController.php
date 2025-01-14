@@ -8,9 +8,15 @@ use App\Models\Product;
 use App\Models\SubOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+    public function __construct(public PaymentController $paymentController)
+    {
+        $this->paymentController = $paymentController;
+    }
+
         /**
      * Get a list of orders.
      */
@@ -240,9 +246,18 @@ class OrderController extends Controller
             // Update the total price of the main order
             $mainOrder->update(['total_price' => $totalOrderPrice]);
 
+            $payment = $this->paymentController->createOrder($request, $mainOrder);
+
+            Log::info("=================== Payment ===================");
+            Log::info(" ",$payment);
+
             DB::commit();
 
-            return createdResponseHandler('Order created successfully', $mainOrder->load('subOrders.products'));
+            return createdResponseHandler('Order created successfully', [
+                $mainOrder->load('subOrders.products'),
+                $payment
+            ]);
+            
         } catch (\Exception $e) {
             DB::rollBack();
             return errorResponseHandler($e->getMessage());
