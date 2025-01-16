@@ -187,6 +187,7 @@ class OrderController extends Controller
         $validatedData = $request->validate([
             'order_id' => 'required',
             'amount' => 'required',
+            'status' => 'required',
             'products' => 'required|array',
             'products.*.id' => 'required|exists:products,id',
             'products.*.quantity' => 'required|integer|min:1'
@@ -252,8 +253,8 @@ class OrderController extends Controller
             // $payment = $this->paymentController->createOrder($request, $mainOrder);
             $payment = $this->createPayment($request, $mainOrder);
 
-            Log::info("=================== Payment ===================");
-            Log::info(" ",$payment);
+            // Log::info("=================== Payment ===================");
+            // Log::info(" ",$payment);
 
             DB::commit();
 
