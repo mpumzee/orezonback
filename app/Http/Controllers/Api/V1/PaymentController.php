@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
@@ -68,9 +69,12 @@ class PaymentController extends Controller
                 }
             }
 
-            return ['success' => false, 'message' => 'Failed to create PayPal order'];
+            throw new Exception($response, 400);
+            
 
-        } catch (\Exception $e) {
+            // return ['success' => false, 'message' => 'Failed to create PayPal order'];
+
+        } catch (Exception $e) {
             Log::error("Error Creating PayPal Order: ", ['error' => $e->getMessage()]);
             return ['success' => false, 'message' => 'An error occurred'];
         }
