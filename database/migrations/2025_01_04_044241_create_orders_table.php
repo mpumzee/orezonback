@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             // $table->foreignId('seller_id')->nullable()->constrained('users')->onDelete('set null');
             $table->decimal('total_price', 15, 2);
-            $table->enum('status', ['pending', 'delivered', 'canceled'])->default('pending');
+            $table->enum('status', ['pending', 'complete', 'delivered', 'canceled'])->default('pending');
             $table->timestamps();
         });
     }
