@@ -12,4 +12,9 @@ class Package extends Model
     {
         return $this->hasManyThrough(User::class, UserPackage::class, 'package_id', 'id', 'id', 'user_id');
     }
+
+    public function userPackages()
+    {
+        return $this->hasMany(UserPackage::class);
+    }
 }

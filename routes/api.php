@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\SellerPackageController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SubCategoriesController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,10 @@ Route::prefix('v1')->group(function() {
         Route::put('/update/{id}', [SellerController::class, 'update']);
         Route::get('/', [SellerController::class, 'getSellers']);
         Route::get('/{id}', [SellerController::class, 'find']);
+    });
+
+    Route::prefix('subscriptions')->group(function () {
+        Route::post('subscribe', [SubscriptionController::class, 'processPayment']);
     });
 
     Route::prefix('categories')->group(function () { 
