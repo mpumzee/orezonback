@@ -17,4 +17,9 @@ class UserPackage extends Model
     {
         return $this->belongsTo(Package::class);
     }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 }
