@@ -39,13 +39,13 @@ Route::prefix('v1')->group(function() {
         Route::get('/{id}', [SellerController::class, 'find']);
     });
 
-    Route::prefix('categories')->group(function () { 
-        Route::get('/', [CategoriesController::class, 'index']); 
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoriesController::class, 'index']);
         Route::get('/{id}', [CategoriesController::class, 'show']);
     });
 
-    Route::prefix('sub-categories')->group(function () { 
-        Route::get('/', [SubCategoriesController::class, 'index']); 
+    Route::prefix('sub-categories')->group(function () {
+        Route::get('/', [SubCategoriesController::class, 'index']);
         Route::get('/{id}', [SubCategoriesController::class, 'show']);
     });
 
@@ -76,13 +76,13 @@ Route::prefix('v1')->group(function() {
         });
 
         Route::prefix('categories')->group(function () {
-            Route::post('/', [CategoriesController::class, 'store']); 
+            Route::post('/', [CategoriesController::class, 'store']);
             Route::put('/{id}', [CategoriesController::class, 'update']);
             Route::delete('/{id}', [CategoriesController::class, 'destroy']);
         });
 
         Route::prefix('sub-categories')->group(function () {
-            Route::post('/', [SubCategoriesController::class, 'store']); 
+            Route::post('/', [SubCategoriesController::class, 'store']);
             Route::put('/{id}', [SubCategoriesController::class, 'update']);
             Route::delete('/{id}', [SubCategoriesController::class, 'destroy']);
         });
@@ -94,6 +94,7 @@ Route::prefix('v1')->group(function() {
             });
 
             Route::get('/admin/payments', [PaymentController::class, 'getAllPaymentsForAdmin']);
+            Route::get('/admin/orders', [OrderController::class, 'showAllSubOrders']);
 
         });
 
@@ -151,7 +152,7 @@ Route::prefix('v1')->group(function() {
             Route::get('/buyer-order/{id}', [OrderController::class, 'showBuyerOrder']);
             Route::get('/seller-order/{id}', [OrderController::class, 'showSellerOrder']);
         });
-        
+
         Route::get('/login', function () {
             return response()->json(['message' => 'Unauthenticated'], 401);
         });
@@ -161,4 +162,3 @@ Route::prefix('v1')->group(function() {
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
- 
