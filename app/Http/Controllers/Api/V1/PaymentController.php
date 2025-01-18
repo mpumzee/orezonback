@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Seller;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
@@ -77,6 +79,61 @@ class PaymentController extends Controller
         } catch (Exception $e) {
             Log::error("Error Creating PayPal Order: ", ['error' => $e->getMessage()]);
             return ['success' => false, 'message' => 'An error occurred'];
+        }
+    }
+
+    public function getAllPaymentsForAdmin()
+    {
+        try {
+            $payments = Payment::with(['order', 'subscription.userPackage.package', 'buyer'])
+                ->latest()
+                ->get();
+
+            return successResponseHandler('All payments retrieved successfully.', $payments);
+        } catch (Exception $e) {
+            return errorResponseHandler($e->getMessage());
+        }
+    }
+
+    public function getPaymentsForBuyer()
+    {
+        try {
+            $user = Auth::user();
+            $payments = Payment::with(['order', 'subscription.userPackage.package'])
+                ->where('buyer_id', $user->id)
+                ->latest()
+                ->get();
+
+            return successResponseHandler('Payments retrieved successfully.', $payments);
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+            return errorResponseHandler($e->getMessage());
+        }
+    }
+
+    public function getPaymentsForSeller()
+    {
+        try {
+            $userId = Auth::id();
+            
+            // Find the seller associated with the logged-in user
+            $seller = Seller::where('user_id', $userId)->first();
+            
+            if (!$seller) {
+                return errorResponseHandler('Seller not found.');
+            }
+
+            // Get payments associated with the seller's subscriptions
+            $payments = Payment::whereHas('subscription.userPackage', function ($query) use ($seller) {
+                $query->where('user_id', $seller->user_id);
+            })
+            ->with(['subscription.userPackage.package'])
+            ->latest()
+            ->get();
+
+            return successResponseHandler('Payments retrieved successfully.', $payments);
+        } catch (Exception $e) {
+            return errorResponseHandler($e->getMessage());
         }
     }
 

@@ -27,12 +27,6 @@ Route::prefix('v1')->group(function() {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
 
-    Route::post('/buyer', [BuyerController::class, 'store']);
-    Route::get('buyer', [BuyerController::class, 'index']);
-    Route::get('buyer/{id}', [BuyerController::class, 'show']);
-    Route::put('buyer/{id}', [BuyerController::class, 'update']);
-    Route::delete('buyer/{id}', [BuyerController::class, 'destroy']);
-
     Route::prefix('packages')->group(function () {
         Route::get('/', [PackageController::class, 'getPackages']);
         Route::get('/{id}', [PackageController::class, 'find']);
@@ -43,10 +37,6 @@ Route::prefix('v1')->group(function() {
         Route::put('/update/{id}', [SellerController::class, 'update']);
         Route::get('/', [SellerController::class, 'getSellers']);
         Route::get('/{id}', [SellerController::class, 'find']);
-    });
-
-    Route::prefix('subscriptions')->group(function () {
-        Route::post('subscribe', [SubscriptionController::class, 'processPayment']);
     });
 
     Route::prefix('categories')->group(function () { 
@@ -81,6 +71,10 @@ Route::prefix('v1')->group(function() {
             Route::put('/update-status/{id}', [PackageController::class, 'updateStatus']);
         });
 
+        Route::prefix('subscriptions')->group(function () {
+            Route::post('subscribe', [SubscriptionController::class, 'processPayment']);
+        });
+
         Route::prefix('categories')->group(function () {
             Route::post('/', [CategoriesController::class, 'store']); 
             Route::put('/{id}', [CategoriesController::class, 'update']);
@@ -98,6 +92,8 @@ Route::prefix('v1')->group(function() {
             Route::get('/admin/dashboard', function () {
                 return response()->json(['message' => 'Welcome Admin']);
             });
+
+            Route::get('/admin/payments', [PaymentController::class, 'getAllPaymentsForAdmin']);
 
         });
 
@@ -127,6 +123,9 @@ Route::prefix('v1')->group(function() {
                 Route::put('/{id}', [OrderController::class, 'update']);
                 Route::delete('/{id}', [OrderController::class, 'destroy']);
             });
+
+            Route::get('/seller/payments', [PaymentController::class, 'getPaymentsForSeller']);
+
         });
 
         // Buyer-only routes
@@ -134,7 +133,16 @@ Route::prefix('v1')->group(function() {
             Route::get('/buyer/dashboard', function () {
                 return response()->json(['message' => 'Welcome Buyer']);
             });
+
+            Route::get('/buyer/payments', [PaymentController::class, 'getPaymentsForBuyer']);
+
         });
+
+        Route::post('/buyer', [BuyerController::class, 'store']);
+        Route::get('buyer', [BuyerController::class, 'index']);
+        Route::get('buyer/{id}', [BuyerController::class, 'show']);
+        Route::put('buyer/{id}', [BuyerController::class, 'update']);
+        Route::delete('buyer/{id}', [BuyerController::class, 'destroy']);
 
         Route::prefix('orders')->middleware('auth')->group(function () {
             Route::post('/', [OrderController::class, 'store']);
