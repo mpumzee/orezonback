@@ -24,4 +24,9 @@ class SubOrder extends Model
         return $this->belongsTo(User::class, 'seller_id');
     }
 
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+
 }

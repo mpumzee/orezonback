@@ -95,6 +95,8 @@ Route::prefix('v1')->group(function() {
 
             Route::get('/admin/payments', [PaymentController::class, 'getAllPaymentsForAdmin']);
 
+            Route::get('/admin/all-orders', [OrderController::class, 'getAllOrders']);
+
         });
 
         // Seller-only routes
