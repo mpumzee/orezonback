@@ -31,6 +31,22 @@ class OrderController extends Controller
         }
     }
 
+    public function getAllOrders()
+    {
+        try {
+            // Retrieve all orders with their sub-orders and products
+            $orders = Order::with([
+                'subOrders' => function ($query) {
+                    $query->with(['buyer', 'seller', 'orderProducts.product']);
+                }
+            ])->latest()->get();
+
+            return successResponseHandler('Orders retrieved successfully.', $orders);
+        } catch (\Exception $e) {
+            return errorResponseHandler($e->getMessage());
+        }
+    }
+
     public function showBuyerOrder($orderId)
     {
         // $order = Order::with('subOrders.products')->findOrFail($orderId);
@@ -113,21 +129,6 @@ class OrderController extends Controller
         try {
             $subOrder = SubOrder::with('products')->where('seller_id', auth()->id())->findOrFail($subOrderId);
 
-            // $response = [
-            //     'sub_order_id' => $subOrder->id,
-            //     'buyer_id' => $subOrder->buyer_id,
-            //     'total_price' => $subOrder->total_price,
-            //     'status' => $subOrder->status,
-            //     'products' => $subOrder->products->map(function ($product) {
-            //         return [
-            //             'id' => $product->id,
-            //             'name' => $product->name,
-            //             'quantity' => $product->pivot->quantity,
-            //             'price' => $product->pivot->price,
-            //         ];
-            //     }),
-            // ];
-
             return successResponseHandler('Sub-order details fetched successfully', $subOrder);
 
         } catch (\Exception $e) {
@@ -138,64 +139,6 @@ class OrderController extends Controller
     /**
      * Create a new order.
      */
-    // public function store(Request $request)
-    // {
-    //     try {
-    //         $validatedData = $request->validate([
-    //             'products' => 'required|array',
-    //             'products.*.id' => 'required|exists:products,id',
-    //             'products.*.quantity' => 'required|integer|min:1'
-    //         ]);
-
-    //         $user = auth()->user();
-
-    //         // Calculate total price
-    //         $totalPrice = 0;
-    //         $products = [];
-    //         $sellerId = null;
-
-    //         foreach ($validatedData['products'] as $productData) {
-    //             $product = Product::find($productData['id']);
-
-    //              // Assign the seller ID from the first product
-    //             if (!$sellerId) {
-    //                 $sellerId = $product->user_id; // Use the user_id of the product owner
-    //             }
-
-    //             $totalPrice += $product->price * $productData['quantity'];
-    //             $products[] = [
-    //                 'id' => $product->id,
-    //                 'price' => $product->price,
-    //                 'quantity' => $productData['quantity'],
-    //             ];
-    //         }
-
-    //         DB::beginTransaction();
-
-    //         // Create the order
-    //         $order = Order::create([
-    //             'user_id' => $user->id,
-    //             'seller_id' => $sellerId, // Store the user_id of the seller
-    //             'total_price' => $totalPrice
-    //         ]);
-
-    //         // Attach products to order_products table
-    //         foreach ($products as $product) {
-    //             $order->products()->attach($product['id'], [
-    //                 'quantity' => $product['quantity'],
-    //                 'price' => $product['price'],
-    //             ]);
-    //         }
-
-    //         DB::commit();
-
-    //         return createdResponseHandler('order created successifully', $order->load('products'));
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return errorResponseHandler($e->getMessage());
-    //     }
-    // }
-
     public function store(Request $request)
     {
         $validatedData = $request->validate([
