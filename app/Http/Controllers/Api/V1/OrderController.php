@@ -109,6 +109,20 @@ class OrderController extends Controller
         }
     }
 
+    public function showAllSubOrders()
+    {
+        try {
+            // Fetch all sub-orders for the logged-in seller
+            $subOrders = SubOrder::with('products')
+                ->get();
+
+            return successResponseHandler('Sub-orders fetched successfully', $subOrders);
+
+        } catch (\Exception $e) {
+            return errorResponseHandler($e->getMessage());
+        }
+    }
+
 
     public function showSellerOrder($subOrderId)
     {
@@ -299,7 +313,7 @@ class OrderController extends Controller
     //             $mainOrder->load('subOrders.products'),
     //             $payment
     //         ]);
-            
+
     //     } catch (\Exception $e) {
     //         DB::rollBack();
     //         return errorResponseHandler($e->getMessage());
@@ -360,7 +374,7 @@ class OrderController extends Controller
                 ->get();
 
             return successResponseHandler('fetched all canceled orders for seller', $orders);
-            
+
         } catch (\Exception $e) {
             return errorResponseHandler($e->getMessage());
         }
