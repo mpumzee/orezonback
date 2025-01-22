@@ -6,6 +6,7 @@ use App\Models\Payment;
 use App\Models\Subscription;
 use App\Models\UserPackage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SubscriptionController extends Controller
 {
@@ -24,6 +25,8 @@ class SubscriptionController extends Controller
             if (!$userPackage) {
                 return errorResponseHandler('Invalid package selection.');
             }
+
+            DB::beginTransaction();
 
             // Process payment (dummy logic here, replace with actual payment gateway integration)
             $payment = Payment::create([
@@ -46,7 +49,13 @@ class SubscriptionController extends Controller
                 'status' => 'active',
             ]);
 
+            $payment->update([
+                'subscription_id' => $subscription->id
+            ]);
+
             // $userPackage->load('package', 'subscriptions');
+
+            DB::commit();
 
             return successResponseHandler('Payment successful. Subscription activated.', [
                 'payment' => $payment,
@@ -54,6 +63,7 @@ class SubscriptionController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            DB::rollBack();
             return errorResponseHandler($e->getMessage());
         }
     }
