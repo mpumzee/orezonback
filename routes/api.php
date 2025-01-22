@@ -39,6 +39,14 @@ Route::prefix('v1')->group(function() {
         Route::get('/{id}', [SellerController::class, 'find']);
     });
 
+    Route::prefix('buyers')->group(function () {
+        Route::post('/buyer', [BuyerController::class, 'store']);
+        Route::get('buyer', [BuyerController::class, 'index']);
+        Route::get('buyer/{id}', [BuyerController::class, 'show']);
+        Route::put('buyer/{id}', [BuyerController::class, 'update']);
+        Route::delete('buyer/{id}', [BuyerController::class, 'destroy']);
+    });
+
     Route::prefix('categories')->group(function () {
         Route::get('/', [CategoriesController::class, 'index']);
         Route::get('/{id}', [CategoriesController::class, 'show']);
@@ -141,11 +149,7 @@ Route::prefix('v1')->group(function() {
 
         });
 
-        Route::post('/buyer', [BuyerController::class, 'store']);
-        Route::get('buyer', [BuyerController::class, 'index']);
-        Route::get('buyer/{id}', [BuyerController::class, 'show']);
-        Route::put('buyer/{id}', [BuyerController::class, 'update']);
-        Route::delete('buyer/{id}', [BuyerController::class, 'destroy']);
+
 
         Route::prefix('orders')->middleware('auth')->group(function () {
             Route::post('/', [OrderController::class, 'store']);
