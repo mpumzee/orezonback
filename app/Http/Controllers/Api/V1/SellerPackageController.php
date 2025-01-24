@@ -50,8 +50,19 @@ class SellerPackageController extends Controller
             }
 
             // Load the seller and the updated package information
+            // $seller = Seller::where('user_id', $userId)
+            //     ->with(['user', 'packages.userPackages'])
+            //     ->first();
+
             $seller = Seller::where('user_id', $userId)
-                ->with(['user', 'packages.userPackages'])
+                ->with([
+                    'user',
+                    'packages' => function ($query) use ($userId) {
+                        $query->with(['userPackages' => function ($q) use ($userId) {
+                            $q->where('user_id', $userId);
+                        }]);
+                    },
+                ])
                 ->first();
 
             return successResponseHandler($message, $seller);

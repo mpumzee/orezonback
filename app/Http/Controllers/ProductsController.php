@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Package;
 use App\Models\Product;
+use App\Models\Subscription;
 use App\Models\UserPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -59,32 +60,39 @@ class ProductsController extends Controller
         }
     }
 
-
     public function store(Request $request)
     {
         try {
             $user = auth()->user();
-            
-            // Get the current user's package and the product limit
-            $userPackage = UserPackage::where('user_id', $user->id)
-                ->first();
 
-            $package = Package::where('id', $userPackage->package_id)
-                ->where('status', 'active')
-                ->first();
+            // Check if the user has an active subscription
+            $subscription = Subscription::whereHas('userPackage', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })->where('status', 'active')
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now())
+            ->first();
+
+            if (!$subscription) {
+                return forbiddenResponseHandler('You must have an active subscription to upload products.');
+            }
+
+            // Get the user's package and product limit
+            $userPackage = $subscription->userPackage;
+            $package = Package::find($userPackage->package_id);
 
             if (!$package || $package->number_of_products <= 0) {
-                return forbiddenResponseHandler('No package assigned or package does not allow any products');
+                return forbiddenResponseHandler('No valid package assigned or package does not allow any products.');
             }
 
             // Count current products
             $productCount = Product::where('user_id', $user->id)->count();
 
             if ($productCount >= $package->number_of_products) {
-                return forbiddenResponseHandler('Product limit reached for your package');
+                return forbiddenResponseHandler('Product limit reached for your package.');
             }
 
-            // Create the product
+            // Validate and create the product
             $validatedData = $request->validate([
                 'sub_category_id' => 'required|exists:sub_categories,id',
                 'name' => 'required|string|max:255',
@@ -111,6 +119,58 @@ class ProductsController extends Controller
             return errorResponseHandler($e->getMessage());
         }
     }
+
+    // public function store(Request $request)
+    // {
+    //     try {
+    //         $user = auth()->user();
+            
+    //         // Get the current user's package and the product limit
+    //         $userPackage = UserPackage::where('user_id', $user->id)
+    //             ->first();
+
+    //         $package = Package::where('id', $userPackage->package_id)
+    //             ->where('status', 'active')
+    //             ->first();
+
+    //         if (!$package || $package->number_of_products <= 0) {
+    //             return forbiddenResponseHandler('No package assigned or package does not allow any products');
+    //         }
+
+    //         // Count current products
+    //         $productCount = Product::where('user_id', $user->id)->count();
+
+    //         if ($productCount >= $package->number_of_products) {
+    //             return forbiddenResponseHandler('Product limit reached for your package');
+    //         }
+
+    //         // Create the product
+    //         $validatedData = $request->validate([
+    //             'sub_category_id' => 'required|exists:sub_categories,id',
+    //             'name' => 'required|string|max:255',
+    //             'description' => 'nullable|string',
+    //             'price' => 'required|numeric|min:0',
+    //             'quantity' => 'required|integer|min:0',
+    //             'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+    //         ]);
+
+    //         $validatedData['user_id'] = $user->id;
+
+    //         // Handle image upload
+    //         if ($request->hasFile('image_url')) {
+    //             $image = $request->file('image_url');
+    //             $imagePath = $image->store('products', 'public'); // Save in the "public/products" directory
+    //             $validatedData['image_url'] = $imagePath;
+    //         }
+
+    //         $product = Product::create($validatedData);
+
+    //         return createdResponseHandler('Product uploaded successfully', $product);
+
+    //     } catch (\Exception $e) {
+    //         return errorResponseHandler($e->getMessage());
+    //     }
+    // }
 
     public function update(Request $request, $id)
     {
