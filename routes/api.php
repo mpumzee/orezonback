@@ -6,27 +6,26 @@ use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PackageController;
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SubCategoriesController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\UserEmailVerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('verify-email/{id}', [UserEmailVerificationController::class, 'verify'])->name('verification.verify');
 
+Route::get('/paypal/success', [PaymentController::class, 'success'])->name('paypal.success');
+Route::get('/paypal/cancel', [PaymentController::class, 'cancel'])->name('paypal.cancel');
+
 Route::prefix('v1')->group(function() {
     // Public routes
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
-
-    Route::post('/buyer', [BuyerController::class, 'store']);
-    Route::get('buyer', [BuyerController::class, 'index']);
-    Route::get('buyer/{id}', [BuyerController::class, 'show']);
-    Route::put('buyer/{id}', [BuyerController::class, 'update']);
-    Route::delete('buyer/{id}', [BuyerController::class, 'destroy']);
 
     Route::prefix('packages')->group(function () {
         Route::get('/', [PackageController::class, 'getPackages']);
@@ -40,13 +39,21 @@ Route::prefix('v1')->group(function() {
         Route::get('/{id}', [SellerController::class, 'find']);
     });
 
-    Route::prefix('categories')->group(function () { 
-        Route::get('/', [CategoriesController::class, 'index']); 
+    Route::prefix('buyers')->group(function () {
+        Route::post('/buyer', [BuyerController::class, 'store']);
+        Route::get('buyer', [BuyerController::class, 'index']);
+        Route::get('buyer/{id}', [BuyerController::class, 'show']);
+        Route::put('buyer/{id}', [BuyerController::class, 'update']);
+        Route::delete('buyer/{id}', [BuyerController::class, 'destroy']);
+    });
+
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [CategoriesController::class, 'index']);
         Route::get('/{id}', [CategoriesController::class, 'show']);
     });
 
-    Route::prefix('sub-categories')->group(function () { 
-        Route::get('/', [SubCategoriesController::class, 'index']); 
+    Route::prefix('sub-categories')->group(function () {
+        Route::get('/', [SubCategoriesController::class, 'index']);
         Route::get('/{id}', [SubCategoriesController::class, 'show']);
     });
 
@@ -72,14 +79,18 @@ Route::prefix('v1')->group(function() {
             Route::put('/update-status/{id}', [PackageController::class, 'updateStatus']);
         });
 
+        Route::prefix('subscriptions')->group(function () {
+            Route::post('subscribe', [SubscriptionController::class, 'processPayment']);
+        });
+
         Route::prefix('categories')->group(function () {
-            Route::post('/', [CategoriesController::class, 'store']); 
+            Route::post('/', [CategoriesController::class, 'store']);
             Route::put('/{id}', [CategoriesController::class, 'update']);
             Route::delete('/{id}', [CategoriesController::class, 'destroy']);
         });
 
         Route::prefix('sub-categories')->group(function () {
-            Route::post('/', [SubCategoriesController::class, 'store']); 
+            Route::post('/', [SubCategoriesController::class, 'store']);
             Route::put('/{id}', [SubCategoriesController::class, 'update']);
             Route::delete('/{id}', [SubCategoriesController::class, 'destroy']);
         });
@@ -89,6 +100,11 @@ Route::prefix('v1')->group(function() {
             Route::get('/admin/dashboard', function () {
                 return response()->json(['message' => 'Welcome Admin']);
             });
+
+            Route::get('/admin/payments', [PaymentController::class, 'getAllPaymentsForAdmin']);
+            Route::get('/admin/orders', [OrderController::class, 'showAllSubOrders']);
+
+            Route::get('/admin/all-orders', [OrderController::class, 'getAllOrders']);
 
         });
 
@@ -118,6 +134,9 @@ Route::prefix('v1')->group(function() {
                 Route::put('/{id}', [OrderController::class, 'update']);
                 Route::delete('/{id}', [OrderController::class, 'destroy']);
             });
+
+            Route::get('/seller/payments', [PaymentController::class, 'getPaymentsForSeller']);
+
         });
 
         // Buyer-only routes
@@ -125,7 +144,12 @@ Route::prefix('v1')->group(function() {
             Route::get('/buyer/dashboard', function () {
                 return response()->json(['message' => 'Welcome Buyer']);
             });
+
+            Route::get('/buyer/payments', [PaymentController::class, 'getPaymentsForBuyer']);
+
         });
+
+
 
         Route::prefix('orders')->middleware('auth')->group(function () {
             Route::post('/', [OrderController::class, 'store']);
@@ -134,7 +158,7 @@ Route::prefix('v1')->group(function() {
             Route::get('/buyer-order/{id}', [OrderController::class, 'showBuyerOrder']);
             Route::get('/seller-order/{id}', [OrderController::class, 'showSellerOrder']);
         });
-        
+
         Route::get('/login', function () {
             return response()->json(['message' => 'Unauthenticated'], 401);
         });
@@ -144,4 +168,3 @@ Route::prefix('v1')->group(function() {
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
- 
