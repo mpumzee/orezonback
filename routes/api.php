@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PackageController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\PayoutsController;
 use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
 use App\Http\Controllers\CategoriesController;
@@ -105,6 +106,9 @@ Route::prefix('v1')->group(function() {
             Route::get('/admin/orders', [OrderController::class, 'showAllSubOrders']);
 
             Route::get('/admin/all-orders', [OrderController::class, 'getAllOrders']);
+
+            Route::get('/sellers/balances', [PayoutsController::class, 'getSellersWithBalances']);
+            Route::post('/sellers/make-payouts', [PayoutsController::class, 'makePayouts']);
 
         });
 
