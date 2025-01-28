@@ -188,6 +188,7 @@ class OrderController extends Controller
                     'buyer_id' => $user->id,
                     'seller_id' => $sellerId,
                     'total_price' => $subOrderPrice,
+                    'payable_amount' => $subOrderPrice,
                     'status' => 'pending'
                 ]);
 

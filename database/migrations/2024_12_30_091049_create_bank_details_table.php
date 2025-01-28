@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('account_number')->nullable();
             $table->string('branch')->nullable();
             $table->string('branch_code')->nullable();
-            // $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('paypal_email')->unique(); // Seller's PayPal email
             $table->timestamps();
         });
