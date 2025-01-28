@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class SubOrder extends Model
 {
     protected $guarded = [];
+
+    public function buyer()
+    {
+        return $this->belongsTo(User::class, 'buyer_id', 'id');
+    }
     
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
     public function products()
@@ -21,7 +26,7 @@ class SubOrder extends Model
 
     public function seller()
     {
-        return $this->belongsTo(User::class, 'seller_id');
+        return $this->belongsTo(User::class, 'seller_id', 'id');
     }
 
     public function orderProducts()

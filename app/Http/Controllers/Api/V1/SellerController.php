@@ -59,10 +59,11 @@ class SellerController extends Controller
                 'country' => ['required'],
                 'business_name' => ['required'],
                 'phone' => ['required', 'min:9', 'max:14'],
-                'bank' => ['required'], 
-                'account_number' => ['required'],
-                'branch' => ['required'],
-                'branch_code' => ['required']
+                'bank' => ['nullable'], 
+                'account_number' => ['nullable'],
+                'branch' => ['nullable'],
+                'branch_code' => ['nullable'],
+                'paypal_email' => ['required', 'email']
             ]);
 
             if ($validator->fails()) {
@@ -91,7 +92,8 @@ class SellerController extends Controller
                 'bank' => $request->bank,
                 'account_number' => $request->account_number,
                 'branch' => $request->branch,
-                'branch_code' => $request->branch_code 
+                'branch_code' => $request->branch_code,
+                'paypal_email' => $request->paypal_email
             ]);
 
             DB::commit();

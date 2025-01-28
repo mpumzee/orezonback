@@ -10,7 +10,7 @@ class Order extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function products()
@@ -23,14 +23,19 @@ class Order extends Model
         return $this->belongsTo(User::class, 'seller_id');
     }
 
-    public function subOrders()
-    {
-        return $this->hasMany(SubOrder::class);
-    }
+    // public function subOrders()
+    // {
+    //     return $this->hasMany(SubOrder::class);
+    // }
 
     public function payments()
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function subOrders()
+    {
+        return $this->hasMany(SubOrder::class, 'order_id', 'id');
     }
 
 }

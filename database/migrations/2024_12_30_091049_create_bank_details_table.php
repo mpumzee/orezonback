@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('bank_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('bank');
-            $table->string('account_number');
-            $table->string('branch');
-            $table->string('branch_code');
+            $table->string('bank')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('branch')->nullable();
+            $table->string('branch_code')->nullable();
+            $table->string('paypal_email')->unique(); // Seller's PayPal email
             $table->timestamps();
         });
     }
