@@ -104,6 +104,7 @@ Route::prefix('v1')->group(function() {
 
             Route::get('/admin/payments', [PaymentController::class, 'getAllPaymentsForAdmin']);
             Route::get('/admin/orders', [OrderController::class, 'showAllSubOrders']);
+            Route::put('/admin/update-order-status/{id}', [OrderController::class, 'updateOrderStatus']);
 
             Route::get('/admin/all-orders', [OrderController::class, 'getAllOrders']);
 

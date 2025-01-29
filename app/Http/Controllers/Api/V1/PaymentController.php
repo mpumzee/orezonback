@@ -167,9 +167,9 @@ class PaymentController extends Controller
                 ]);
 
                 // Update order and sub-orders to delivered
-                $order->update(['status' => 'delivered']);
+                $order->update(['status' => 'complete']);
                 foreach ($order->subOrders as $subOrder) {
-                    $subOrder->update(['status' => 'delivered']);
+                    $subOrder->update(['status' => 'paid']);
                 }
 
                 return response()->json([
