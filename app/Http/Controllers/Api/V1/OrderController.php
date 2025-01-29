@@ -238,6 +238,40 @@ class OrderController extends Controller
         return $paymentDetails;
     }
 
+    public function updateOrderStatus($order_id)
+    {
+        try {
+            // $validated = $request->validate([
+            //     'order_id' => 'required|integer|exists:orders,id',
+            // ]);
+
+            // Find the order by ID and check its current status
+            $order = Order::where('id', $order_id)
+                ->where('status', 'complete') // Ensure it's 'complete'
+                ->first();
+
+            if (!$order) {
+                return notFoundResponseHandler('Order not found or not in a complete status.');
+            }
+
+            // Update the order status to 'delivered'
+            $order->status = 'delivered';
+            $order->save();
+
+            // Update all related sub_orders to mark them ready for payouts
+            SubOrder::where('order_id', $order->id)
+                ->update([
+                    'payout_status' => 'pending',
+                ]);
+
+            return successResponseHandler('Order status updated to delivered and sub-orders are ready for payouts.', $order);
+
+            // return response()->json(['message' => 'Order status updated to delivered and sub-orders are ready for payouts.']);
+        } catch (\Exception $e) {
+            return errorResponseHandler($e->getMessage());
+        }
+    }
+
     // public function store(Request $request)
     // {
     //     try {

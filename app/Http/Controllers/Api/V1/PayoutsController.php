@@ -14,7 +14,7 @@ class PayoutsController extends Controller
 {
     public function getSellersWithBalances()
     {
-        $sellers = SubOrder::where('status', 'delivered')
+        $sellers = SubOrder::where('status', 'paid')
             ->where('payout_status', 'pending')
             ->groupBy('seller_id')
             ->select(
