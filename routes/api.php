@@ -158,7 +158,7 @@ Route::prefix('v1')->group(function() {
 
         Route::prefix('orders')->middleware('auth')->group(function () {
             Route::post('/', [OrderController::class, 'store']);
-            Route::get('/', [OrderController::class, 'index']);
+            Route::get('/', [OrderController::class, 'getAllOrders']);
             Route::get('/{id}', [OrderController::class, 'show']);
             Route::get('/buyer-order/{id}', [OrderController::class, 'showBuyerOrder']);
             Route::get('/seller-order/{id}', [OrderController::class, 'showSellerOrder']);
