@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Equipment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SubCategory>
  */
 class SubCategoryFactory extends Factory
 {
@@ -83,54 +83,6 @@ class SubCategoryFactory extends Factory
             $record['description'] = 'Equipment used to drill holes in the ground for such activities as prospecting.';
         });
     }
-    public function loaders()
-    {
-        return $this->afterMaking(function ($record) {
-            $record['category_id'] = 3;
-            $record['name'] = 'Loaders';
-            $record['description'] = 'Equipment used to remove overburden and waste rocks from the mine site.';
-        });
-    }
-    public function jawCrushers()
-    {
-        return $this->afterMaking(function ($record) {
-            $record['category_id'] = 4;
-            $record['name'] = 'Jaw Crushers';
-            $record['description'] = 'Equipment used in the liberation and reduction of the size of the ore.';
-        });
-    }
-    public function floatationCells()
-    {
-        return $this->afterMaking(function ($record) {
-            $record['category_id'] = 5;
-            $record['name'] = 'Floatation Cells';
-            $record['description'] = 'Equipment for separating commercially valuable minerals from their ores.';
-        });
-    }
-    public function jumbos()
-    {
-        return $this->afterMaking(function ($record) {
-            $record['category_id'] = 6;
-            $record['name'] = 'Jumbos';
-            $record['description'] = 'A variety of subsurface mining techniques used to extract hard minerals.';
-        });
-    }
-    public function hardHats()
-    {
-        return $this->afterMaking(function ($record) {
-            $record['category_id'] = 7;
-            $record['name'] = 'Hard Hats';
-            $record['description'] = 'Collection of tools and protective gear that miners use to protect themselves.';
-        });
-    }
-    public function generators()
-    {
-        return $this->afterMaking(function ($record) {
-            $record['category_id'] = 8;
-            $record['name'] = 'Generators';
-            $record['description'] = 'Their availability is important for ensuring high output.';
-        });
-    }
     public function pneumaticDrills()
     {
         return $this->afterMaking(function ($record) {
@@ -145,6 +97,14 @@ class SubCategoryFactory extends Factory
             $record['category_id'] = 2;
             $record['name'] = 'Jack Hammers';
             $record['description'] = 'Powerful tools that uses a chisel and either compressed air or an electric motor to break through hard materials like concrete or rock.';
+        });
+    }
+    public function loaders()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 3;
+            $record['name'] = 'Loaders';
+            $record['description'] = 'Equipment used to remove overburden and waste rocks from the mine site.';
         });
     }
     public function haulTrucks()
@@ -171,6 +131,14 @@ class SubCategoryFactory extends Factory
             $record['description'] = "Compact, versatile machines with wheels that's used for construction, landscaping, and agriculture.";
         });
     }
+    public function jawCrushers()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 4;
+            $record['name'] = 'Jaw Crushers';
+            $record['description'] = 'Equipment used in the liberation and reduction of the size of the ore.';
+        });
+    }
     public function coneCrushers()
     {
         return $this->afterMaking(function ($record) {
@@ -195,6 +163,144 @@ class SubCategoryFactory extends Factory
             $record['description'] = 'Rod mills are used in an open circuit between crushing and the ball mill.';
         });
     }
+
+    public function floatationCells()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 5;
+            $record['name'] = 'Floatation Cells';
+            $record['description'] = 'Equipment for separating commercially valuable minerals from their ores.';
+        });
+    }
+    public function magneticSeparators()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 5;
+            $record['name'] = 'Magnetic Separators';
+            $record['description'] = 'Equipment that removes unwanted materials from a stream by using magnets to pull out metal.';
+        });
+    }
+    public function centrifuges()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 5;
+            $record['name'] = 'Centrifuges';
+            $record['description'] = 'These are laboratory devices that use centrifugal force to separate components in a liquid or solid.';
+        });
+    }
+    public function spiralConcentrators()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 5;
+            $record['name'] = 'Spiral Concentrators';
+            $record['description'] = 'These are devices that separate solid components in a slurry based on particle density and shape.';
+        });
+    }
+
+
+    public function jumbos()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 6;
+            $record['name'] = 'Jumbos';
+            $record['description'] = 'A variety of subsurface mining techniques used to extract hard minerals.';
+        });
+    }
+    public function loadHaulDumpMachines()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 6;
+            $record['name'] = 'Load-Haul-Dump (LHD) Machines';
+            $record['description'] = 'These are similar to conventional front end loaders but developed for the toughest of hard rock mining applications.';
+        });
+    }
+    public function scissorLifts()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 6;
+            $record['name'] = 'Scissor Lifts';
+            $record['description'] = 'These are a mobile platforms that uses a scissor-like mechanism to raise and lower workers to elevated heights.';
+        });
+    }
+    public function undergoundTrucks()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 6;
+            $record['name'] = 'Underground Trucks';
+            $record['description'] = 'These are vehicles used to transport materials and debris in underground mining operations.';
+        });
+    }
+
+
+    public function hardHats()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 7;
+            $record['name'] = 'Hard Hats';
+            $record['description'] = 'Collection of tools and protective gear that miners use to protect themselves.';
+        });
+    }
+    public function safetyGlasses()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 7;
+            $record['name'] = 'Safe Glasses';
+            $record['description'] = 'These are a type of personal protective equipment (PPE) that protect the eyes from injury and irritation caused by dust, debris, and other hazards.';
+        });
+    }
+    public function respirators()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 7;
+            $record['name'] = 'Respirators';
+            $record['description'] = 'These are a type of personal protective equipment (PPE) that protect miners from hazardous airborne contaminants.';
+        });
+    }
+    public function fallProtectionGear()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 7;
+            $record['name'] = 'Fall Protection Gear';
+            $record['description'] = 'These are equipments that prevents or reduces the impact of a fall from an elevated surface.';
+        });
+    }
+
+
+    public function generators()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 8;
+            $record['name'] = 'Generators';
+            $record['description'] = 'Their availability is important for ensuring high output.';
+        });
+    }
+    public function pumps()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 8;
+            $record['name'] = 'Pumps';
+            $record['description'] = 'These are mechanical devices that move water, slurries, and other fluids to support mining operations.';
+        });
+    }
+    public function conveyorBeltsystems()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 8;
+            $record['name'] = 'Conveyor Belt Systems';
+            $record['description'] = 'These are systems that move bulk materials like ore, coal, and minerals from extraction sites to processing facilities, storage, or transportation hubs.';
+        });
+    }
+    public function explosives()
+    {
+        return $this->afterMaking(function ($record) {
+            $record['category_id'] = 8;
+            $record['name'] = 'Explosives';
+            $record['description'] = 'These are chemical compounds or mixtures that are detonated to break rock and displace it.';
+        });
+    }
+
+
+
 
 
 
