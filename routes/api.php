@@ -109,6 +109,7 @@ Route::prefix('v1')->group(function() {
             Route::get('/admin/all-orders', [OrderController::class, 'getAllOrders']);
 
             Route::get('/admin/sellers-balances', [PayoutsController::class, 'getSellersWithBalances']);
+            Route::get('/admin/get-payouts', [PayoutsController::class, 'getPayouts']);
             Route::post('/admin/sellers/make-payouts', [PayoutsController::class, 'makePayouts']);
 
         });
