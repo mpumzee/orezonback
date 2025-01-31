@@ -14,7 +14,9 @@ class ProductsController extends Controller
     public function index()
     {
         try {
-            $products = Product::with(['subcategory'])->get();
+            $products = Product::with(['subcategory'])
+                ->where('quantity', '>', 0)
+                ->get();
 
             return successResponseHandler('fetched products successfully',$products);
         } catch (\Exception $e) {

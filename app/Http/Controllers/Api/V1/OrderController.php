@@ -136,9 +136,6 @@ class OrderController extends Controller
         }
     }
 
-    /**
-     * Create a new order.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -151,19 +148,28 @@ class OrderController extends Controller
         ]);
 
         $user = auth()->user();
-
-        // Group products by seller
         $productsGroupedBySeller = [];
-        foreach ($validatedData['products'] as $productData) {
-            $product = Product::find($productData['id']);
-            $productsGroupedBySeller[$product->user_id][] = [
-                'id' => $product->id,
-                'price' => $product->price,
-                'quantity' => $productData['quantity']
-            ];
-        }
 
         DB::beginTransaction();
+
+        try {
+            foreach ($validatedData['products'] as $productData) {
+                $product = Product::find($productData['id']);
+
+                // Check if requested quantity is more than available stock
+                if ($productData['quantity'] > $product->quantity) {
+                    return errorResponseHandler("Requested quantity for {$product->name} exceeds available stock.");
+                }
+
+                // Reduce stock quantity
+                $product->decrement('quantity', $productData['quantity']);
+
+                $productsGroupedBySeller[$product->user_id][] = [
+                    'id' => $product->id,
+                    'price' => $product->price,
+                    'quantity' => $productData['quantity']
+                ];
+            }
 
             // Create the main order
             $mainOrder = Order::create([
@@ -177,7 +183,6 @@ class OrderController extends Controller
             foreach ($productsGroupedBySeller as $sellerId => $products) {
                 $subOrderPrice = 0;
 
-                // Calculate total price for this seller's products
                 foreach ($products as $product) {
                     $subOrderPrice += $product['price'] * $product['quantity'];
                 }
@@ -205,14 +210,9 @@ class OrderController extends Controller
             }
 
             // Update the total price of the main order
-            // $mainOrder->update(['total_price' => $totalOrderPrice]);
             $mainOrder->update(['total_price' => $validatedData['amount']]);
 
-            // $payment = $this->paymentController->createOrder($request, $mainOrder);
             $payment = $this->createPayment($request, $mainOrder);
-
-            // Log::info("=================== Payment ===================");
-            // Log::info(" ",$payment);
 
             DB::commit();
 
@@ -220,7 +220,98 @@ class OrderController extends Controller
                 $mainOrder->load('subOrders.products'),
                 $payment
             ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return errorResponseHandler($e->getMessage());
+        }
     }
+
+
+    /**
+     * Create a new order.
+     */
+    // public function store(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'order_id' => 'required',
+    //         'amount' => 'required',
+    //         'status' => 'required',
+    //         'products' => 'required|array',
+    //         'products.*.id' => 'required|exists:products,id',
+    //         'products.*.quantity' => 'required|integer|min:1'
+    //     ]);
+
+    //     $user = auth()->user();
+
+    //     // Group products by seller
+    //     $productsGroupedBySeller = [];
+    //     foreach ($validatedData['products'] as $productData) {
+    //         $product = Product::find($productData['id']);
+    //         $productsGroupedBySeller[$product->user_id][] = [
+    //             'id' => $product->id,
+    //             'price' => $product->price,
+    //             'quantity' => $productData['quantity']
+    //         ];
+    //     }
+
+    //     DB::beginTransaction();
+
+    //         // Create the main order
+    //         $mainOrder = Order::create([
+    //             'user_id' => $user->id,
+    //             'total_price' => 0, // Will be updated later
+    //             'status' => 'pending'
+    //         ]);
+
+    //         $totalOrderPrice = 0;
+
+    //         foreach ($productsGroupedBySeller as $sellerId => $products) {
+    //             $subOrderPrice = 0;
+
+    //             // Calculate total price for this seller's products
+    //             foreach ($products as $product) {
+    //                 $subOrderPrice += $product['price'] * $product['quantity'];
+    //             }
+
+    //             // Create a sub-order for the seller
+    //             $subOrder = SubOrder::create([
+    //                 'order_id' => $mainOrder->id,
+    //                 'buyer_id' => $user->id,
+    //                 'seller_id' => $sellerId,
+    //                 'total_price' => $subOrderPrice,
+    //                 'payable_amount' => $subOrderPrice,
+    //                 'status' => 'pending'
+    //             ]);
+
+    //             // Attach products to the sub-order
+    //             foreach ($products as $product) {
+    //                 $subOrder->products()->attach($product['id'], [
+    //                     'order_id' => $mainOrder->id,
+    //                     'quantity' => $product['quantity'],
+    //                     'price' => $product['price'],
+    //                 ]);
+    //             }
+
+    //             $totalOrderPrice += $subOrderPrice;
+    //         }
+
+    //         // Update the total price of the main order
+    //         // $mainOrder->update(['total_price' => $totalOrderPrice]);
+    //         $mainOrder->update(['total_price' => $validatedData['amount']]);
+
+    //         // $payment = $this->paymentController->createOrder($request, $mainOrder);
+    //         $payment = $this->createPayment($request, $mainOrder);
+
+    //         // Log::info("=================== Payment ===================");
+    //         // Log::info(" ",$payment);
+
+    //         DB::commit();
+
+    //         return createdResponseHandler('Order created successfully', [
+    //             $mainOrder->load('subOrders.products'),
+    //             $payment
+    //         ]);
+    // }
 
     private function createPayment(Request $request, $order)
     {
