@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Crypt;
 
 class VerificationMail extends Mailable
 {
@@ -41,7 +42,7 @@ class VerificationMail extends Mailable
             markdown: 'mail.verification-mail',
             with: [
                 'name' => $this->user->name,
-                'verificationUrl' => route('verification.verify', $this->user->id)
+                'verificationUrl' => route('verification.verify', ['id' => Crypt::encryptString($this->user->id)])
             ]
         );
     }
