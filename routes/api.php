@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BuyerController;
+use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\EquipmentController;
 use App\Http\Controllers\Api\V1\MetalsController;
 use App\Http\Controllers\Api\V1\OrderController;
@@ -27,6 +28,8 @@ Route::prefix('v1')->group(function() {
     // Public routes
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
+
+    Route::post('/contact', [ContactController::class, 'contactEmail']);
 
     Route::prefix('packages')->group(function () {
         Route::get('/', [PackageController::class, 'getPackages']);
