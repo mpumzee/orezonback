@@ -38,7 +38,7 @@ jobs:
         password: y3T83vKO # FTP password
         protocol: ftp
         local-dir: ./ # Path to the built Angular app
-        server-dir: /domains/ore-zon.com/public_html/ # Path on tReplace with the target remote directory on the FTP server.
+        server-dir: /domains/ore-zone.com/public_html/ # Path on tReplace with the target remote directory on the FTP server.
         exclude: |                  
                   vendor/**
                   .env
