@@ -90,7 +90,7 @@
                     </blockquote>
                     <figcaption style="margin-top: 2.5rem;" class="mt-10">
                         <div style="margin-top: 1rem;display: flex;align-items: center;justify-content: center;gap: 0.75rem;font-size: 1rem;" class="mt-4 flex items-center justify-center space-x-3 text-base">
-                            <a href="https://orezon.co.zw/" style="text-decoration: none;font-size: 2.25rem;color: black; width: 16.666667%;text-align: center;font-weight: 600;cursor: pointer;position: relative;"
+                            <a href="https://ore-zone.com/" style="text-decoration: none;font-size: 2.25rem;color: black; width: 16.666667%;text-align: center;font-weight: 600;cursor: pointer;position: relative;"
                                  class="text-4xl w-1/6 text-center font-semibold cursor-pointer relative before:absolute before:bg-green-200 before:bottom-0 before:left-0 before:h-full before:w-full before:origin-bottom before:scale-y-[0.35] hover:before:scale-y-100 before:transition-transform before:ease-in-out before:duration-500">
                                 <span style="position: relative" class="relative">Register</span>
                             </a>
