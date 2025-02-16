@@ -28,6 +28,10 @@ Route::prefix('v1')->group(function() {
     // Public routes
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    // Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 
     Route::post('/contact', [ContactController::class, 'contactEmail']);
 
