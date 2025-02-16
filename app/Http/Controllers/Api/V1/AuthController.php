@@ -50,26 +50,33 @@ class AuthController extends Controller
     
     public function login(Request $request): JsonResponse
     {
-       $request->validate([
-       'email' => 'required|email|max:255',
-       'password' => 'required|string|min:8|max:255',
-       ]);
+        $request->validate([
+        'email' => 'required|email|max:255',
+        'password' => 'required|string|min:8|max:255',
+        ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)
+            ->with([
+                'seller', 
+                'bankDetails', 
+                'seller.packages'])
+            ->first();
      
         if(!$user || !hash::check($request->password, $user->password)){
+            return response()->json([
+                'message' => 'Incorrect Credentials'
+            ], 401);
+        }
+
+        $token = $user->createToken($user->name.'Auth-Token')->plainTextToken;
+
+
         return response()->json([
-            'message' => 'Incorrect Credentials'
-        ], 401);
-     }
-
-     $token = $user->createToken($user->name.'Auth-Token')->plainTextToken;
-
-     return response()->json([
-     'message' => 'Login Successful',
-     'token_type' => 'Bearer',
-     'token' => $token
-     ], 200);
+        'message' => 'Login Successful',
+        'token_type' => 'Bearer',
+        'token' => $token,
+        'user' => $user
+        ], 200);
     }
 
     
