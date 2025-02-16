@@ -16,5 +16,5 @@ Button Text
 </x-mail::button> --}}
 
 Thanks,<br>
-{{ config('app.name') }}
+Ore-zone
 </x-mail::message>

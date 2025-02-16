@@ -20,6 +20,8 @@ return new class extends Migration
             $table->decimal('price', 15, 2);
             $table->integer('quantity')->default(0);
             $table->string('image_url')->nullable();
+            $table->string('image_url2')->nullable();
+            $table->string('image_url3')->nullable();
             $table->timestamps();
         });
     }
