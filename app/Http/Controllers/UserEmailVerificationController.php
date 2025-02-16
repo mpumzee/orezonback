@@ -42,7 +42,9 @@ class UserEmailVerificationController extends Controller
         $user->email_verified_at = now();
         $user->save();
 
-        return view('verification.success', ['message' => 'Your email has been verified successfully!']);
+        return view('verification.success', [
+            'message' => 'Your email has been verified successfull, Login below to access the official site.'
+        ]);
     }
 
 }

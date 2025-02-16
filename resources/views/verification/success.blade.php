@@ -100,7 +100,7 @@
     <div>
         <figure>
             <blockquote style="text-align: center;font-size: 1.5rem;font-weight: 500;line-height: 2rem;color: #1a202c;" class="text-center text-xl font-medium leading-8 text-gray-900 sm:text-2xl sm:leading-9">
-                <p>“Your email has been verified successfull, Login below to access the official site.”
+                <p>“{{ $message }}”
                 </p>
             </blockquote>
             <figcaption style="margin-top: 2.5rem;" class="mt-10">
