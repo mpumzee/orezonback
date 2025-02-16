@@ -11,21 +11,26 @@
 <div class="card p-4 shadow" style="width: 400px;">
     <h3 class="text-center mb-4">Reset Password</h3>
 
-    @if(isset($status))
-        <div class="alert alert-success">{{ session('status') }}</div>
-    @endif
     @if(session('status'))
         <div class="alert alert-success text-center">
             {{ session('status') }} <br>
             <a href="{{ route('login') }}" class="btn btn-primary mt-2">Login</a>
         </div>
     @endif
+    {{-- @if($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif --}}
 
-
-    @if($errors->any())
+    @if(isset($errors) && count($errors) > 0)
         <div class="alert alert-danger">
             <ul>
-                @foreach($errors->all() as $error)
+                @foreach($errors as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>

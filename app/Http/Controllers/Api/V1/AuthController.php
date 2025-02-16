@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -101,11 +102,17 @@ class AuthController extends Controller
 
     public function resetPassword(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'token' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
         ]);
+
+        if($validator->fails()) {
+            return view('reset-password', [
+                'errors' => $validator->errors()->all()
+            ]);
+        }
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
@@ -117,20 +124,14 @@ class AuthController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            // dd($request->token);
-            Log::info($request->token);
-            // return redirect()->route('password.reset')->with('status', 'Your password has been reset successfully!');
-            return view('verification.success', ['message' => 'Your password has been reset successfully!']);
+            return view('verification.success', [
+                'message' => 'Your password has been reset successfully! Login below to access the site.'
+            ]);
         }
-    
-        return back()->withInput()->withErrors(['email' => 'Invalid token or email.']);
 
-        // return $status === Password::PASSWORD_RESET
-        //     ? response()->json(['message' => 'Password reset successful.'], 200)
-        //     : response()->json(['message' => 'Invalid token or email.'], 400);
-        // session()->flash('status', 'Your password has been reset successfully!');
-        // return $status === Password::PASSWORD_RESET
-        //     ? back()
-        //     : back()->withErrors(['email' => 'Invalid token or email.']);
+        return view('reset-password', [
+            'errors' => ['email' => 'Invalid token or email.']
+        ]);
+
     }
 }
