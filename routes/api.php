@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\PayoutsController;
 use App\Http\Controllers\Api\V1\SellerController;
 use App\Http\Controllers\Api\V1\SellerPackageController;
+use App\Http\Controllers\Api\V1\SupplierMessageController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SubCategoriesController;
@@ -71,6 +72,10 @@ Route::prefix('v1')->group(function() {
         Route::get('/category/{id}', [ProductsController::class, 'findByCategory']);
     });
 
+    Route::prefix('messages')->group(function () {
+        Route::post('/', [SupplierMessageController::class, 'store']);
+    });
+
     // Protected routes
     Route::middleware(['auth:sanctum'])->group(function () {
         // Routes accessible to all authenticated users
@@ -119,12 +124,22 @@ Route::prefix('v1')->group(function() {
             Route::get('/admin/get-payouts', [PayoutsController::class, 'getPayouts']);
             Route::post('/admin/sellers/make-payouts', [PayoutsController::class, 'makePayouts']);
 
+            Route::prefix('messages')->group(function () {
+                Route::get('/', [SupplierMessageController::class, 'index']);
+                Route::get('supplier/{supplier_id}', [SupplierMessageController::class, 'getSupplierMessages']);
+
+            });
+
         });
 
         // Seller-only routes
         Route::middleware('role:seller')->group(function () {
             Route::get('/seller/dashboard', function () {
                 return response()->json(['message' => 'Welcome Seller']);
+            });
+
+            Route::prefix('messages')->group(function () {
+                Route::get('/', [SupplierMessageController::class, 'supplierMessages']);
             });
 
             Route::post('/seller/select-package', [SellerPackageController::class, 'selectPackage']);
